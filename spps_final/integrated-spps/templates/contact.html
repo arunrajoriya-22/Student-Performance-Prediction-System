@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Team{% endblock %}
+{% block content %}
+<div class="hero" style="padding-bottom:2rem">
+  <div class="hero-badge">👥 Project Team</div>
+  <h1 style="font-size:clamp(1.8rem,4vw,2.8rem)">Meet the Team</h1>
+  <p class="hero-sub">B.Tech AIML — Macro Project 2025–2026 | MITS Gwalior</p>
+</div>
+<section class="section" style="padding-top:0">
+  <div class="grid grid-2" style="max-width:860px;margin:0 auto 2rem">
+    <div style="display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1.2rem">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">👨‍💻</div>
+      <div><div style="font-weight:700;color:#fff"> ARUN RAJORIYA </div><div style="font-size:.8rem;color:rgba(255,255,255,0.5)">Team Lead — ML Development</div><div style="font-size:.75rem;color:rgba(255,255,255,0.35)">Roll No: BTAM24O1017</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1.2rem">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#667eea,#f093fb);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">👩‍💻</div>
+      <div><div style="font-weight:700;color:#fff"> ANKIT GURJAR </div><div style="font-size:.8rem;color:rgba(255,255,255,0.5)">Frontend Developer</div><div style="font-size:.75rem;color:rgba(255,255,255,0.35)">Roll No: BTAM24O1009</div></div>
+    </div>
+  </div>
+  <div class="grid grid-2" style="max-width:860px;margin:0 auto 2rem">
+    <div class="card" style="text-align:center"><span style="font-size:2rem;display:block;margin-bottom:.5rem">👨‍🏫</span><div style="font-weight:700;color:#fff">Project Guide</div><div style="color:rgba(255,255,255,0.55);font-size:.88rem;margin-top:.3rem">Dr. Neeraj Mishra</div><div style="color:rgba(255,255,255,0.4);font-size:.8rem">Professor, AI Dept.</div></div>
+    <div class="card" style="text-align:center"><span style="font-size:2rem;display:block;margin-bottom:.5rem">🏛️</span><div style="font-weight:700;color:#fff">Institution</div><div style="color:rgba(255,255,255,0.55);font-size:.88rem;margin-top:.3rem">MITS, Gwalior (M.P.)</div><div style="color:rgba(255,255,255,0.4);font-size:.8rem">Centre for Artificial Intelligence</div></div>
+  </div>
+  <div class="card" style="max-width:860px;margin:0 auto">
+    <h3 style="color:#a5b4fc;font-size:.95rem;margin-bottom:1rem">📬 Contact Us</h3>
+    <form id="contactForm">
+      <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Full Name</label><input class="form-input" type="text" id="cName" placeholder="Your name" required/></div>
+      <div class="form-group" style="margin-bottom:1rem"><label class="form-label">Email</label><input class="form-input" type="email" id="cEmail" placeholder="your@email.com" required/></div>
+      <div class="form-group" style="margin-bottom:1.5rem"><label class="form-label">Message</label><textarea class="form-input" id="cMessage" rows="4" placeholder="Your message..." required style="resize:vertical"></textarea></div>
+      <button type="submit" class="btn btn-primary btn-full">📨 Send Message</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

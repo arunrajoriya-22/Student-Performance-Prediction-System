@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}404{% endblock %}
+{% block content %}
+<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem">
+  <div>
+    <div style="font-size:6rem;margin-bottom:1rem">🤔</div>
+    <h1 style="font-size:4rem;font-weight:900;background:linear-gradient(135deg,#fff,#667eea);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem">{{ message or '404' }}</h1>
+    <p style="color:rgba(255,255,255,0.55);font-size:1.1rem;margin-bottom:2rem">{{ message or "Page not found!" }}</p>
+    <a href="/" class="btn btn-primary">🏠 Back to Home</a>
+  </div>
+</div>
+{% endblock %}

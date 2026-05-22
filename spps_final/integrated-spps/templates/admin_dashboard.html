@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block extra_head %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+  <aside class="admin-sidebar">
+    <div class="sidebar-title">Main</div>
+    <ul>
+      <li><a href="/admin/dashboard" class="active">📊 Dashboard</a></li>
+      <li><a href="/admin/students">👥 Students</a></li>
+      <li><a href="/admin/history">📜 History</a></li>
+      <li><a href="/admin/model-performance">🧠 Model Performance</a></li>
+    </ul>
+    <div class="sidebar-title">Export</div>
+    <ul>
+      <li><a href="/admin/export/predictions/csv">📥 Predictions CSV</a></li>
+      <li><a href="/admin/export/students/csv">📥 Students CSV</a></li>
+      <li><a href="/admin/export/predictions/json">📥 Predictions JSON</a></li>
+    </ul>
+    <div class="sidebar-title">System</div>
+    <ul>
+      <li><a href="/predict">🔮 Make Prediction</a></li>
+      <li><a href="/admin-logout">🚪 Logout</a></li>
+    </ul>
+  </aside>
+  <div class="admin-main">
+    <div class="admin-page-title">📊 Admin Dashboard</div>
+    <div class="admin-page-sub">Overview of all predictions and student data</div>
+    <div class="grid grid-4" style="margin-bottom:1.5rem">
+      <div class="stat-tile"><div class="stat-value">{{ stats.total_students }}</div><div class="stat-label">👥 Students</div></div>
+      <div class="stat-tile"><div class="stat-value">{{ stats.total_predictions }}</div><div class="stat-label">🔮 Predictions</div></div>
+      <div class="stat-tile"><div class="stat-value">{{ stats.avg_pct }}%</div><div class="stat-label">📈 Avg Score</div></div>
+      <div class="stat-tile"><div class="stat-value">{{ stats.fail_count }}</div><div class="stat-label">❌ At-Risk</div></div>
+    </div>
+    <div class="grid grid-3" style="margin-bottom:1.5rem">
+      <div class="card" style="text-align:center;border-color:rgba(239,68,68,0.3)"><div style="font-size:2rem;font-weight:800;color:#ef4444">{{ stats.fail_count }}</div><div style="font-size:.85rem;color:rgba(255,255,255,0.5);margin-top:.3rem">❌ Fail</div></div>
+      <div class="card" style="text-align:center;border-color:rgba(59,130,246,0.3)"><div style="font-size:2rem;font-weight:800;color:#3b82f6">{{ stats.pass_count }}</div><div style="font-size:.85rem;color:rgba(255,255,255,0.5);margin-top:.3rem">✅ Pass</div></div>
+      <div class="card" style="text-align:center;border-color:rgba(16,185,129,0.3)"><div style="font-size:2rem;font-weight:800;color:#10b981">{{ stats.dist_count }}</div><div style="font-size:.85rem;color:rgba(255,255,255,0.5);margin-top:.3rem">🏆 Distinction</div></div>
+    </div>
+    <div class="grid grid-2" style="margin-bottom:1.5rem">
+      <div class="card"><h3 style="color:#fff;font-size:1rem;margin-bottom:1rem">Category Distribution</h3><canvas id="pieChart" style="max-height:220px"></canvas></div>
+      <div class="card"><h3 style="color:#fff;font-size:1rem;margin-bottom:1rem">Prediction Trend (Last 30)</h3><canvas id="trendChart" style="max-height:220px"></canvas></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h3 style="color:#fff;font-size:1rem">📜 Recent Predictions</h3>
+        <a href="/admin/history" class="btn btn-outline btn-sm">View All</a>
+      </div>
+      {% if stats.recent %}
+      <div class="table-wrap"><table class="admin-table">
+        <thead><tr><th>#</th><th>Student</th><th>LR %</th><th>RF %</th><th>Category</th><th>Confidence</th><th>Date</th></tr></thead>
+        <tbody>
+        {% for p in stats.recent %}
+        <tr>
+          <td style="color:rgba(255,255,255,0.4)">{{ p.id }}</td>
+          <td>{{ p.student_name or 'Anonymous' }}</td>
+          <td><strong style="color:#667eea">{{ p.predicted_pct }}%</strong></td>
+          <td style="color:rgba(255,255,255,0.5)">{{ p.rf_predicted_pct or '—' }}{% if p.rf_predicted_pct %}%{% endif %}</td>
+          <td>{% if p.predicted_cat=='Fail' %}<span class="badge badge-fail">❌ Fail</span>{% elif p.predicted_cat=='Pass' %}<span class="badge badge-pass">✅ Pass</span>{% else %}<span class="badge badge-dist">🏆 Dist.</span>{% endif %}</td>
+          <td>{{ p.confidence }}%</td>
+          <td style="color:rgba(255,255,255,0.4);font-size:.82rem">{{ p.predicted_at.strftime('%d/%m %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+      {% else %}
+      <p style="color:rgba(255,255,255,0.5);text-align:center;padding:2rem">No predictions yet. <a href="/predict" style="color:var(--primary)">Make your first →</a></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+fetch('/api/category-chart').then(r=>r.json()).then(data=>{
+  new Chart(document.getElementById('pieChart').getContext('2d'),{type:'doughnut',data:{labels:data.labels,datasets:[{data:data.values,backgroundColor:data.colors,borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',padding:14,font:{size:12}}}}}});
+});
+fetch('/api/prediction-trend').then(r=>r.json()).then(data=>{
+  new Chart(document.getElementById('trendChart').getContext('2d'),{type:'line',data:{labels:data.labels,datasets:[{label:'Predicted %',data:data.values,borderColor:'#667eea',backgroundColor:'rgba(102,126,234,0.12)',fill:true,tension:0.4,pointRadius:3}]},options:{responsive:true,scales:{x:{ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#94a3b8'},grid:{color:'rgba(255,255,255,0.05)'},min:0,max:100}},plugins:{legend:{labels:{color:'#94a3b8'}}}}});
+});
+</script>
+{% endblock %}
